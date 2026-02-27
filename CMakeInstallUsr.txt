@@ -1,0 +1,41 @@
+# This version is incomplete and not recommended for installation in the user directory!
+
+cmake_minimum_required(VERSION 3.10)
+project(CatHash VERSION 0.0.1)
+
+add_library(cathash SHARED
+    lib/hash256.cc
+    lib/create_hash.cc
+)
+
+set_target_properties(cathash PROPERTIES
+    VERSION 0.0.1
+    SOVERSION 1
+)
+
+install(FILES
+    include/CatHash.hpp
+    include/hash256.hpp
+    include/core/create_hash.hpp
+    DESTINATION include/CatHash
+)
+
+install(TARGETS cathash
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+    PUBLIC_HEADER DESTINATION include/CatHash 
+)
+
+install(EXPORT cathashTargets
+    FILE cathashTargets.cmake
+    NAMESPACE cathash::
+    DESTINATION lib/cmake/cathash
+)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/cathashConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
