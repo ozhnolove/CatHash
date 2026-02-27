@@ -14,11 +14,11 @@ Language: C++20 (compatible with C++17. GCC must support C++17 or higher!)
 GitHub: [https://github.com/ozhnolove/CatHash](https://github.com/ozhnolove/CatHash)
 
 This is a pure-from-scratch SHA256 implementation created by a 15-year-old developer. It features:
-- ✔️ Core SHA256 algorithm
-- ✔️ Hexadecimal conversion
-- ✔️ Random salt generation
-- ✔️ Password hashing
-- ✔️ Constant-time comparison (protection from timing attacks)
+- OK Core SHA256 algorithm
+- OK Hexadecimal conversion
+- OK Random salt generation
+- OK Password hashing
+- OK Constant-time comparison (protection from timing attacks)
 
 ---
 
@@ -30,7 +30,7 @@ This is a pure-from-scratch SHA256 implementation created by a 15-year-old devel
 | Security | Supports salt and constant-time comparison |
 | Lightweight | No external dependencies, just include the header and use CMake |
 | Simple | Clean API design, easy to learn and use |
-| ⚠️ Note | Not security-audited; use OpenSSL for large projects |
+| Note | Not security-audited; use OpenSSL for large projects |
 
 ---
 
@@ -103,7 +103,7 @@ else {
 
 ![GitHub stars](https://img.shields.io/github/stars/ozhnolove/CatHash?style=social)
 
-> 🐱 Библиотека SHA256, написанная с нуля — простая, удобная, идеально подходит для изучения и маленьких проектов!
+> Библиотека SHA256, написанная с нуля — простая, удобная, идеально подходит для изучения и маленьких проектов!
 
 ---
 
@@ -115,11 +115,11 @@ CatHash v1.0 | Nolove
 GitHub: [https://github.com/ozhnolove/CatHash](https://github.com/ozhnolove/CatHash)
 
 Это полностью мой собственный SHA256 от 15-летнего разработчика. Включает:
-- ✔️ Основной алгоритм SHA256
-- ✔️ Конвертация в шестнадцатеричный формат
-- ✔️ Генерация случайной соли
-- ✔️ Хеширование паролей
-- ✔️ Сравнение за постоянное время (защита от атак по времени выполнения)
+- OK Основной алгоритм SHA256
+- OK Конвертация в шестнадцатеричный формат
+- OK Генерация случайной соли
+- OK Хеширование паролей
+- OK Сравнение за постоянное время (защита от атак по времени выполнения)
 
 ---
 
@@ -131,7 +131,7 @@ GitHub: [https://github.com/ozhnolove/CatHash](https://github.com/ozhnolove/CatH
 | Безопасность | Поддержка соли и постоянного времени сравнения |
 | Легкость | Нет внешних зависимостей, просто подключайте заголовок и используйте CMake |
 | Простота | API максимально простой, освоить легко |
-| ⚠️ Важно | Нет аудита безопасности, для больших проектов используйте OpenSSL |
+| Важно | Нет аудита безопасности, для больших проектов используйте OpenSSL |
 
 ---
 
@@ -204,7 +204,7 @@ else {
 
 ![GitHub stars](https://img.shields.io/github/stars/ozhnolove/CatHash?style=social)
 
-> 🐱 一个从零手写的 SHA256 哈希库，简单实用，适合学习和小型项目
+> 一个从零手写的 SHA256 哈希库，简单实用，适合学习和小型项目
 
 ---
 
