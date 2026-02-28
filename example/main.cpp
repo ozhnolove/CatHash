@@ -90,5 +90,16 @@ int main () {
     else {
         std::cout << RED << "Wrong password, try again!" << RED << std::endl;  
     }
+
+    const std::string hex_var = hash256_method_obj.fetchHash256("xs9s9");
+    hash256_method_obj.setHashIteration(111111);
+    const std::string salt = hash256_method_obj.generateSalt();
+    const std::string hash_password = hash256_method_obj.getHashPasswordaddIteration(hex_var , salt);
+    std::cout << hash_password << std::endl;
+    if (hash256_method_obj.verifyHashPasswordIteration("xs9s9", hash_password)){
+        std::cout << "LOGIN SUCCESS!" << std::endl;
+    }else {
+        std::cout << "LOGIN FAIL!" << std::endl;
+    }
     return 0;
 }

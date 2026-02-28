@@ -68,10 +68,15 @@ namespace CatHash {
             std::unique_ptr<CatHash::Hash256::hexcore::hashcore> hash_obj;
             std::string data;
             std::string result_hex;
+            long hash_iterations_numbers;
             public:
             HASH256(){
             CatHash::HASH256::hash_obj = std::make_unique<
             CatHash::Hash256::hexcore::hashcore>();};
+            static std::string binToHex(const std::string& binary); 
+            bool verifyHashPasswordIteration (const std::string& verifyPassword , const std::string& dataBasePassworld);
+            inline void setHashIteration(int iteration_number) {hash_iterations_numbers = iteration_number;};
+            std::string getHashPasswordaddIteration (const std::string& hex_password , const std::string& salt);
             std::string fetchHash256 (const std::string& _data);
             std::string generateSalt () const;
             std::string hashUint8toStr (const std::vector<uint8_t>& hash_uint8);

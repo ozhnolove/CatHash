@@ -79,23 +79,60 @@ const std::string database_hex_salt_password = salt_ + ":" + database_hex; // Ad
 // After this, your storage logic depends on your ORM/database tools
 ```
 
-### 7. Password verification
-
-Of course, this is a simple example. If your password system uses salt (for user security in your personal project),  
-you should use CatHash’s password verification method. This uses constant-time comparison and automatic salt handling.  
-The implementation is basic, but it prevents basic hacking attempts, since SHA-256 is irreversible—but please avoid using this for large projects;  
-my hash iteration count is low, but I’ll improve it soon. Thanks for your support!
-
+### 7. Password Verification
+##
+I evolved from simple verification to combining salts and hashes. While this is still relatively basic, it's hard to measure its true complexity; at least the core part is most important. For me, it works well enough—and I would use it myself.
+##
 ```cpp
-// Password Verification Example
+// Explanation of Password Verification Methods
 const std::string error_password_hex = hash256_method_obj.fetchHash256(error_password);
-if (hash256_method_obj.verifyHashPassword(error_password_hex, database_hex_salt_password)){
-    // Password correct
+if (hash256_method_obj.verifyHashPassword(error_password_hex, database_hex_salt_password)) {
+    // Password is correct
     std::cout << "Password correct" << std::endl;
 }
 else {
-    // Password incorrect
+    // Password is incorrect
     std::cout << RED << "Password error" << std::endl;
+}
+```
+
+### 8. Password Iteration
+
+```cpp
+// Obtain a hashed password
+const std::string hex_var = hash256_method_obj.fetchHash256("xs9s9");
+// Now, apply iterations
+/**
+ * @note The more iterations you set here, the slower the computation and the more server resources are consumed. 
+ * This is your own decision—as an adult 🌚
+ */
+hash256_method_obj.setHashIteration(111111); 
+// Recommend one million to balance user experience
+// Of course, this is also very secure
+
+// When generating a random salt
+const std::string salt = hash256_method_obj.generateSalt();
+// Now you have a password that has been hashed multiple times along with a salt.
+// You can store it in your database as 'salt : hashed'
+const std::string hash_password = hash256_method_obj.getHashPasswordaddIteration(hex_var, salt);
+// For reference: I use 'salt' combined with a repeatedly iterated hashed password,
+// using 'salt iterated (salt hashed)' for passwords. This is very secure—well, I'm not totally sure, 
+// but at least ordinary hackers can't crack it. If your project is huge, I don't recommend you use this.
+```
+
+### 9. Verifying an Iterated Password
+##
+It’s worth mentioning that this time, verification is done by comparing the combination of salt and hash, which is much safer than basic checks. Also, this verification does not require you to hash the password first; you can directly insert the string.
+##
+```cpp
+// The right side is the value provided by the user, and the left side should be fetched from the database—the one you stored.
+// Then, proceed with verification. Rest assured, it works just like regular verification,
+// using constant-time operations and additional byte checks to prevent DDoS and excessive memory usage (must not exceed 1024*1024).
+// Of course, storing also performs verification.
+if (hash256_method_obj.verifyHashPasswordIteration("xs9s9", hash_password)) {
+    std::cout << "LOGIN SUCCESS!" << std::endl;
+} else {
+    std::cout << "LOGIN FAIL!" << std::endl;
 }
 ```
 
@@ -181,22 +218,59 @@ const std::string database_hex_salt_password = salt_ + ":" + database_hex; // Д
 ```
 
 ### 7. Проверка пароля
-
-Это простой пример. Если ваша система паролей использует соль (для безопасности пользователей в личном проекте),  
-стоит воспользоваться методом CatHash для проверки паролей: применяется сравнение за постоянное время и автоматическое добавление соли.  
-Реализация простая, но защищает от базовых хакерских атак, ведь SHA-256 необратим — но для больших проектов не советую:  
-количество итераций небольшое, позже добавлю возможность увеличить. Спасибо за поддержку!
-
+##
+Я начал с простой проверки и постепенно перешёл к проверке с использованием соли и хэша. Это по-прежнему относительно просто, сложно судить о реальной сложности; по крайней мере, главное — это основная часть, и для меня этого более чем достаточно, я сам бы это использовал.
+##
 ```cpp
-// Пример проверки пароля
+// Объяснение методов проверки пароля
 const std::string error_password_hex = hash256_method_obj.fetchHash256(error_password);
-if (hash256_method_obj.verifyHashPassword(error_password_hex, database_hex_salt_password)){
+if (hash256_method_obj.verifyHashPassword(error_password_hex, database_hex_salt_password)) {
     // Пароль верный
     std::cout << "Пароль верный" << std::endl;
 }
 else {
-    // Пароль неверный
-    std::cout << RED << "Пароль неверный" << std::endl;
+    // Неверный пароль
+    std::cout << RED << "Ошибка пароля" << std::endl;
+}
+```
+
+### 8. Итерация пароля
+
+```cpp
+// Получение хэшированного пароля
+const std::string hex_var = hash256_method_obj.fetchHash256("xs9s9");
+// Теперь сделаем несколько итераций
+/**
+ * @note Чем больше итераций, тем медленнее вычисления и больше нагрузка на сервер.
+ * Решайте сами, ведь вы взрослый человек 🌚
+ */
+hash256_method_obj.setHashIteration(111111); 
+// Рекомендуется миллион, чтобы сбалансировать пользовательский опыт
+// Конечно, это также очень безопасно
+
+// При генерации случайной соли
+const std::string salt = hash256_method_obj.generateSalt();
+// Теперь у вас есть пароль, прошедший хэширование и итерации вместе с солью.
+// Его можно хранить в базе данных в формате "соль : хэш"
+const std::string hash_password = hash256_method_obj.getHashPasswordaddIteration(hex_var, salt);
+// К слову: я использую 'соль' в сочетании с многократно итерированным хэшем пароля,
+// то есть 'итерации соли (соль + хэш)' для пароля. Это очень безопасно, хотя я не уверен на 100%,
+// но обычный хакер это не взломает. Если у вас крупный проект — не советую использовать такой способ.
+```
+
+### 9. Проверка многократно итерированного пароля
+##
+Стоит отметить: в этот раз я сравниваю сочетание соли и хэша — это намного безопаснее стандартной проверки. Причём для этой проверки не нужно сначала хэшировать пароль, можно сразу вставить строку.
+##
+```cpp
+// Справа значение, введённое пользователем, слева — то, что хранится в базе данных (то, что вы сохранили).
+// Только после этого выполняется проверка. Можете не беспокоиться: она работает так же, как обычная проверка,
+// использует сравнение в постоянное время и добавленные байтовые проверки для предотвращения DDoS и лишней нагрузки на память (не более 1024*1024).
+// Конечно, при сохранении тоже идёт проверка.
+if (hash256_method_obj.verifyHashPasswordIteration("xs9s9", hash_password)) {
+    std::cout << "ВХОД УСПЕШЕН!" << std::endl;
+} else {
+    std::cout << "ОШИБКА ВХОДА!" << std::endl;
 }
 ```
 
@@ -277,13 +351,8 @@ const std::string database_hex_salt_password = salt_ + ":" + database_hex; //Add
 ```
 ### 7.验证密码
 ##
-    Of course, this is a simple verification. If your password has salt protection 
-    and you need it for personal project user password security, 
-    you should use CatHash's password verification method. 
-    This method uses time-constant comparison and automatic salt generation. Of course,
-    the implementation is very simple; after all, I also feel it's quite basic. 
-    At least it can prevent hackers since SHA-256 is irreversible, but it is not recommended for 
-    large projects because my hash iteration count is very low. I will add more in the future Thank you for your support
+我从简单的验证发展到结合盐值和哈希一起验证，但这仍然相对简单，很难说有多复杂；
+至少核心部分是最重要的，至少这真的够用了，而且我自己也会使用它。
 ##
 ```cpp
 //Explanation of Password Verification Methods
@@ -295,5 +364,37 @@ if (hash256_method_obj.verifyHashPassword(error_password_hex, database_hex_salt_
 else {
     //Password In case of error
     std::cout << RED << "Password error" << std::endl;
+}
+```
+
+### 8.给你的密码迭代
+
+```cpp
+//Obtain a hashed password
+const std::string hex_var = hash256_method_obj.fetchHash256("xs9s9");
+//Now iterate for him
+/**
+*@note Note that the more iterations here, the slower the computation and the higher the server consumption. This is your own choice because you are an adult 🌚
+*/
+hash256_method_obj.setHashIteration(111111); 
+//Recommend one million to balance your user experience
+//Of course, it is also very safe
+
+//When obtaining a random salt
+const std::string salt = hash256_method_obj.generateSalt();
+//Okay, now you have a password that has been hashed multiple times with a hash and random salt, and you can store it in your database in the format 'salt : hashed'
+const std::string hash_password = hash256_method_obj.getHashPasswordaddIteration(hex_var , salt);
+//Also, a reminder: I am using 'stal' combined with a hashed password iterated multiple times, using 'stal iterated('stal' hashed)' for the password. This is very secure, okay, I'm not sure, but at least ordinary hackers can't break it. If your project is huge, I don't recommend you use this
+```
+### 9.给迭代多次的密码进行验证
+##
+It is worth mentioning that this time I am verifying by comparing the salt plus hash value, which is much safer than ordinary verification. Note that this verification does not require you to hash it once before verifying directly insert the string
+##
+```cpp
+//The right side is the value requested by the user, and the left side needs to pass in the real correct value from the database, that is, the one you stored, and then perform verification. Rest assured, it is the same as the regular verification method, using constant-time and adding byte verification to prevent DDoS and excessive memory pressure, which must not exceed 1024*1024 of course, depositing also verifies
+if (hash256_method_obj.verifyHashPasswordIteration("xs9s9", hash_password)){
+    std::cout << "LOGIN SUCCESS!" << std::endl;
+}else {
+    std::cout << "LOGIN FAIL!" << std::endl;
 }
 ```

@@ -70,7 +70,7 @@ void CatHash::Hash256::hexcore::hashcore::create_hash_256(const std::string& tar
     uint32_t h[8];
     for (int i = 0; i < 8; i++) h[i] =  CatHash::Hash256::hexcore::hashcore::H0[i];
     for (size_t i = 0 ; i < data.size(); i += 64) {
-        uint8_t w[64];
+        uint32_t w[64];
         for (int j = 0; j < 16; j++) 
         { w[j] = (data[i + j *4] << 24) |
                  (data[i + j *4 + 1] << 16) |
