@@ -9,6 +9,7 @@ set(SOURCES
     "example/main.cpp"
     "lib/core_hash256.cc"
     "lib/hash256.cc"
+    "lib/read_hash_file.cc"
 )
 add_executable(cathash_test ${SOURCES})
 

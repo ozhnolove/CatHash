@@ -48,6 +48,7 @@
 // Warning: Not security audited. For learning purposes only. 
 //          For production, please use more mature libraries like OpenSSL.
 
+#include <fstream>
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"
 #define RED     "\033[31m"
@@ -66,6 +67,8 @@
 
 
 #include "../include/hash256.hpp"
+#include "../core/read_file.hpp"
+#include <filesystem>
 #include <cstddef>
 #include <cstdint>
 #include <exception>
@@ -154,10 +157,41 @@ bool CatHash::HASH256::verifyHashPassword(const std::string& verifyHash , const 
 
 std::string CatHash::HASH256::getHashPasswordaddIteration(const std::string& hex_password 
     , const std::string& salt) {
-    std::string result_hex;
     const std::string hex_targe = salt + hex_password;
+    std::string result_hex = fetchHash256(hex_targe);
     for (int i = 0; i < hash_iterations_numbers; i ++) 
     {result_hex = fetchHash256(result_hex);}
     const std::string result_add_salt = salt + ":" + result_hex;
     return result_add_salt;
+}
+
+void CatHash::HASH256::setReadTarge(const std::string& filePath , const std::string& fileName) {
+    if (filePath.empty() || fileName.empty()) {return;}
+    if (std::filesystem::exists(filePath+fileName))
+    {
+        size_t file_type_ops = fileName.find(".");
+        if (file_type_ops != std::string::npos) 
+        {CatHash::HASH256::readFileType = fileName.substr(file_type_ops +1);}
+        else {CatHash::HASH256::readFileType = ".txt";}
+        CatHash::HASH256::readFilePath = filePath;
+        CatHash::HASH256::readFileName = fileName;
+        CatHash::HASH256::READFILE_PATH = filePath+fileName;
+    }
+    else {std::cerr << RED << "Failed to hash source file ! because the file >\a" 
+        << filePath + fileName << "does not exist"; return;}
+}
+
+bool CatHash::HASH256::startHashFile() {    
+    try {
+        std::stringstream str_stream;
+        std::ifstream ifstr(CatHash::HASH256::readFileName);
+        str_stream << ifstr.rdbuf();
+        ifstr.close();
+        CatHash::hash256::hexcore::readFileTool readfiletool;
+        return readfiletool.HashTargeFile(str_stream,CatHash::HASH256::readFileName , readFilePath);
+    } catch (std::exception& cerr) {
+        std::cerr << RED"[FAIL] > \a" 
+        << cerr.what() << std::endl;
+        return false;
+    }
 }

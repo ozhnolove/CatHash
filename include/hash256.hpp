@@ -58,6 +58,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <sys/types.h>
 #include <vector>
@@ -68,7 +69,13 @@ namespace CatHash {
             std::unique_ptr<CatHash::Hash256::hexcore::hashcore> hash_obj;
             std::string data;
             std::string result_hex;
+            std::string readFilePath;
+            std::string readFileName;
+            std::string readFileType;
+            std::string READFILE_PATH;
             long hash_iterations_numbers;
+            protected:
+            bool saveSource(std::stringstream& read_str_stream);
             public:
             HASH256(){
             CatHash::HASH256::hash_obj = std::make_unique<
@@ -88,6 +95,8 @@ namespace CatHash {
                 if (colon == std::string::npos) return {"" , ""};
                 return {dataBasePassworld.substr(0,colon) , dataBasePassworld.substr(colon + 1)};
             }
+            void setReadTarge(const std::string& filePath , const std::string& fileName);
+            bool startHashFile ();
         };
 }
 

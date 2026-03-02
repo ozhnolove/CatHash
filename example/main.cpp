@@ -17,6 +17,17 @@
 #include <vector>
 #include "../include/Cathash.hpp"
 
+void testfilehash () {
+    CatHash::HASH256 hash256_method_obj;
+    hash256_method_obj.setReadTarge("./", "test.txt");
+    if (hash256_method_obj.startHashFile()){
+        std::cout << "Hash file success" << std::endl;
+    }
+    else {
+        std::cout << "Hash file fail" << std::endl;
+    }
+}
+
 int main () {
     std::string author_intorduction = ROSE"CatHash v1.0 | Nolove\r\n";
     author_intorduction += ROSE"Author > Nolov\r\n";
@@ -92,7 +103,7 @@ int main () {
     }
 
     const std::string hex_var = hash256_method_obj.fetchHash256("xs9s9");
-    hash256_method_obj.setHashIteration(111111);
+    hash256_method_obj.setHashIteration(700000);
     const std::string salt = hash256_method_obj.generateSalt();
     const std::string hash_password = hash256_method_obj.getHashPasswordaddIteration(hex_var , salt);
     std::cout << hash_password << std::endl;
@@ -101,5 +112,8 @@ int main () {
     }else {
         std::cout << "LOGIN FAIL!" << std::endl;
     }
+
+    testfilehash();
+
     return 0;
 }
